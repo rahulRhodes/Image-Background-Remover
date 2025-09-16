@@ -1,3 +1,6 @@
-rembg
-boto3
 fastapi
+uvicorn
+rembg
+opencv-python
+numpy
+python-multipart
