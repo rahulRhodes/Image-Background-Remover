@@ -1,6 +1,4 @@
-# 🖼️ Image Background Removal API  
 
-This repository demonstrates an **end-to-end pipeline** for serving an **image background removal model** via an API deployed on AWS.
 
 ---
 
@@ -8,81 +6,103 @@ This repository demonstrates an **end-to-end pipeline** for serving an **image b
 📄 [Read the full review here](https://docs.google.com/document/d/1okXH0WwAznkjQCDh_ZY9uRtl9u5aocl5/edit?usp=drive_link&ouid=107960887514237623929&rtpof=true&sd=true).
 
 ---
+🖼️ Background Remover API
 
-## 🧩 Background Removal  
+A simple FastAPI application to remove image backgrounds using the rembg
+ library.
+Supports both image URLs and file uploads.
 
-We use the [**rembg**](https://github.com/danielgatis/rembg) library for background removal.  
+✨ Features
 
-### 🔹 Installation  
-```bash
-pip install rembg
+🟢 Remove background from an image URL.
 
+🔵 Remove background from an uploaded file.
 
+🗂️ Saves processed images into an outputs/ folder.
 
-from rembg import remove
+🌐 Serves processed images via a local static URL.
 
-input_path = 'input.png'
-output_path = 'output.png'
+⚙️ Installation
 
-with open(input_path, 'rb') as i:
-    with open(output_path, 'wb') as o:
-        input = i.read()
-        output = remove(input)
-        o.write(output)
+Clone the repository and install dependencies:
 
+git clone https://github.com/your-username/background-remover-api.git
+cd background-remover-api
 
+# Create virtual environment (optional)
+python -m venv venv
+source venv/bin/activate   # Linux / Mac
+venv\Scripts\activate      # Windows
 
-API Deployment
+# Install requirements
+pip install -r requirements.txt
 
-The API is deployed on an AWS EC2 (t2.2xlarge) instance.
+▶️ Run the API
 
-🔹 Setup EC2 Instance
+Start the FastAPI server with Uvicorn:
 
-Log into AWS and create an EC2 instance with Ubuntu (latest LTS).
-
-SSH into the instance and run:
-
-sudo apt-get update
-sudo apt install -y python3-pip nginx
-
-🔹 Configure NGINX
-sudo nano /etc/nginx/sites-enabled/fastapi_nginx
+uvicorn main:app --reload
 
 
-Paste the following (replace <YOUR_EC2_IP> with your instance public IP):
+API will be available at:
+👉 http://127.0.0.1:8000/docs
+ (Swagger UI)
 
-server {
-    listen 80;
-    server_name <YOUR_EC2_IP>;
+🔌 API Endpoints
+1️⃣ Remove BG from Image URL
 
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-    }
+Endpoint:
+
+POST /remove_bg
+
+
+Body (JSON):
+
+{
+  "img_url": "https://example.com/sample.jpg"
 }
 
 
-Restart NGINX:
+Response:
 
-sudo service nginx restart
+{
+  "rmv_img_url": "http://127.0.0.1:8000/outputs/AbCdEfGhIj.png"
+}
+
+2️⃣ Remove BG from Uploaded File
+
+Endpoint:
+
+POST /remove_bg_upload
 
 
-👉 Update your EC2 security group to allow inbound traffic on port 80 (HTTP).
+Form Data:
 
-🚀 Serve Background Removal via API
+file → Upload an image file (JPG, PNG, etc.)
 
-Clone this repository:
+Response:
 
-git clone https://github.com/rahulRhodes/Image-Background-Remover.git
-cd image-background-removal-api-end-to-end-pipeline
+{
+  "rmv_img_url": "http://127.0.0.1:8000/outputs/XyZpQrLmNo.png"
+}
 
-🔹 Setup Virtual Environment
-sudo apt install python3-virtualenv
+📂 Project Structure
+.
+├── main.py             # FastAPI app
+├── requirements.txt    # Dependencies
+├── outputs/            # Processed images (auto-created)
+└── README.md           # Documentation
 
-virtualenv venv --python=python3
-source venv/bin/activate
+🛠️ Tech Stack
 
-pip install -r requirements.txt
+FastAPI
+ – API framework
 
-🔹 Launch FastAPI App
-python3 -m uvicorn main:app
+Rembg
+ – Background removal
 
+OpenCV
+ – Image processing
+
+NumPy
+ – Array operations
